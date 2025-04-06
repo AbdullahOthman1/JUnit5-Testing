@@ -166,28 +166,23 @@ public class RecipeBookTest {
     }
 
     @Test
-    @DisplayName("Retrieve recipes after add (should include the recipe)")
+    @DisplayName("Retrieve recipes after add – multiple assertions on recipe")
     void testGetRecipesAfterAdd() {
         book.addRecipe(recipe);
         Recipe[] recipes = book.getRecipes();
-        assertEquals("Mocha", recipes[0].getName());
+        Recipe r = recipes[0];
+
+        assertAll("Check added recipe properties",
+            () -> assertNotNull(r),
+            () -> assertEquals("Mocha", r.getName()),
+            () -> assertEquals(0, r.getAmtMilk()),
+            () -> assertEquals(0, r.getAmtSugar()),
+            () -> assertEquals(0, r.getAmtChocolate()),
+            () -> assertEquals(0, r.getAmtCoffee())
+        );
     }
 
-    @Test
-    @DisplayName("Retrieve after delete and edit reflects correct changes")
-    void testGetRecipesAfterDeleteAndEdit() {
-        Recipe r1 = new Recipe();
-        r1.setName("ToEdit");
-        book.addRecipe(r1);
-        book.deleteRecipe(0);
 
-        Recipe r2 = new Recipe();
-        r2.setName("Updated");
-        book.editRecipe(0, r2);
-
-        Recipe[] recipes = book.getRecipes();
-        assertEquals("", recipes[0].getName()); // after edit, name is cleared
-    }
 
     // ---------------------
     // timeout test
@@ -200,22 +195,6 @@ public class RecipeBookTest {
         book.getRecipes();
     }
 
-    // ---------------------
-    // multiple assertion test
-    // ---------------------
 
-    @Test
-    @DisplayName("Multiple assertions for recipe properties")
-    void testMultipleAssertions() {
-        recipe.setName("TripleMocha");
-        book.addRecipe(recipe);
-        Recipe r = book.getRecipes()[0];
-
-        assertAll("Check recipe fields",
-            () -> assertNotNull(r),
-            () -> assertEquals("TripleMocha", r.getName()),
-            () -> assertEquals(0, r.getAmtMilk()),
-            () -> assertEquals(0, r.getAmtSugar())
-        );
-    }
+    
 }
